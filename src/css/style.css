@@ -10,14 +10,6 @@ html {
     box-sizing: inherit;
 }
 
-/* html {
-    background: url(/data/background.jpeg) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-} */
-
 /* Responsive Full Background Image Using CSS */
 body {
     background-image: url(/data/background.jpeg);
@@ -27,3 +19,33 @@ body {
     background-size: cover;
     background-color:#928a8a;
 }
+
+.visibleOff {
+    display: none;
+}
+
+#welcomeMessage {
+    position: relative;
+}
+
+#message {
+    position: absolute;
+    bottom: 30%;
+    left: 50% ;
+    transform: translateX(-50% );
+    text-align: center;
+}
+
+.errorMessage {
+    display: visible;
+}
+
+#sortAndFilter {
+    margin-left: 9%;
+    margin-right: 27%;
+}
+
+th {
+    font-weight: normal;
+    color: 
+} 
