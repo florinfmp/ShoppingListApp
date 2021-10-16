@@ -1,0 +1,29 @@
+* {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+}
+
+html {
+    box-sizing: border-box;   /* enabled also in Bootstrap */
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+/* html {
+    background: url(/data/background.jpeg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+} */
+
+/* Responsive Full Background Image Using CSS */
+body {
+    background-image: url(/data/background.jpeg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color:#928a8a;
+}
