@@ -20,8 +20,16 @@ body {
     background-color:#928a8a;
 }
 
-.visibleOff {
+.displayOff {
     display: none;
+}
+
+.visibleOff {
+    visibility: hidden;
+}
+
+.visibleOn {
+    visibility: visible;
 }
 
 #welcomeMessage {
@@ -36,8 +44,8 @@ body {
     text-align: center;
 }
 
-.errorMessage {
-    display: visible;
+#errorMessage {
+    color: red;
 }
 
 #sortAndFilter {
@@ -45,7 +53,27 @@ body {
     margin-right: 27%;
 }
 
+table {
+    background-color: #FDFCE5;
+}
+
 th {
     font-weight: normal;
-    color: 
 } 
+
+.formInputValid {
+    border: solid 1px lightgray;
+}
+
+.formInputInvalid {
+    border: solid 1px red;
+}
+
+.renameBtnHeight {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.markedText {
+    text-decoration: line-through;
+}
