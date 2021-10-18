@@ -77,3 +77,12 @@ th {
 .markedText {
     text-decoration: line-through;
 }
+
+.sortBtn:hover {
+    background-color: yellow;
+}
+
+.borderActive {
+    border: solid 1px blue;
+}
+

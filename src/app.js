@@ -1,20 +1,28 @@
 // variables
-const items =[];
+const items = [];
+const existingCategories = [];
 const welcomeMessage = document.getElementById('welcomeMessage');
 const addBtn = document.getElementById('addBtn');
 const addItemBtn = document.getElementById('addItemBtn');
 const inputField = document.getElementById('inputField');
 const errorMessage = document.getElementById('errorMessage');
+const filterElement = document.getElementById('filterElement');
+const appliedFilter = document.getElementById('appliedFilter');
+const clearFilter = document.getElementById('clearFilter');
 const mainTable = document.getElementById('mainTable');
 const tableHead = document.getElementById('tableHead');
 const tableBody = document.getElementById('tableBody');
 const sortNameAsc = document.getElementById('sortNameAsc');
 const sortNameDes = document.getElementById('sortNameDes');
-const sortCatAsc = document.getElementById('sortCatAsc');
-const sortCatDes = document.getElementById('sortCatDes');
+const clearSort = document.getElementById('clearSort');
+// const sortCatAsc = document.getElementById('sortCatAsc');
+// const sortCatDes = document.getElementById('sortCatDes');
 let validity = false;
 let globalID = 1;
 let editID = -1;
+let activeSort = 'noSort'; // asc, des
+let activeFilter = ''; // drinks, bakery, meat, vegetables, fruits, sweets, spices, other
+let indexActiveFilter = '';
 
 // display the welcome message
 if (items.length !== 0) {
@@ -27,26 +35,61 @@ addBtn.addEventListener('click', () => {
 });
 
 // event listeners
-addItemBtn.addEventListener('click', buildList);
+addItemBtn.addEventListener('click', shoppingList);
 
-buttonSortAscending.addEventListener("click", function(event) {
-    sortTableAsc("name");
-    buttonSortAscending.classList.add("activeSort");
-    buttonSortDescending.classList.remove("activeSort");
+sortNameAsc.addEventListener('click', () => {
+    activeSort = 'asc';
+    sortNameAsc.classList.add('borderActive');
+    sortNameDes.classList.remove('borderActive');
+    clearSort.classList.remove('borderActive');
+    displayList(items, activeSort, activeFilter);
 });
 
-buttonSortDescending.addEventListener("click", function(event) {
-    sortTableDes("name");
-    buttonSortAscending.classList.remove("activeSort");
-    buttonSortDescending.classList.add("activeSort");
+sortNameDes.addEventListener('click', () => {
+    activeSort = 'des';
+    sortNameAsc.classList.remove('borderActive');
+    sortNameDes.classList.add('borderActive');
+    clearSort.classList.remove('borderActive');
+    displayList(items, activeSort, activeFilter);
 });
+
+clearSort.addEventListener('click', () => {
+    activeSort = 'noFilter';
+    sortNameDes.classList.remove('borderActive');
+    sortNameAsc.classList.remove('borderActive');
+    // clearSort.classList.add('borderActive');
+    displayList(items, activeSort, activeFilter);
+});
+
+appliedFilter.addEventListener('change', () => {
+    // get category from appliedFilter array
+    activeFilter = appliedFilter.value;
+    // get selected index from appliedFilter array
+    // indexActiveFilter = appliedFilter.selectedIndex;
+
+    displayList(items, activeSort, activeFilter);
+});
+
+clearFilter.addEventListener('click', () => {
+    appliedFilter.selectedIndex = 0;
+    activeFilter = "";
+    displayList(items, activeSort, activeFilter)
+
+})
+
+// set category from array
+    // document.querySelector(`#select-${elem.id}`).selectedIndex = elem.selIndexCategory;
+// get category from appliedFilter array
+
+// set category from appliedFilter array
+// document.querySelector('#appliedFilter').selectedIndex = index;
 
 // functions
-function buildList() {
+function shoppingList() {
     validateInput();
-    addOrEditItem();
+    buildList();
     resetInputField();
-    createTable(items);
+    displayList(items, activeSort, activeFilter);
 }
 
 function validateInput() {
@@ -61,7 +104,7 @@ function validateInput() {
     };
 };
 
-function addOrEditItem() {
+function buildList() {
     if(validity) {
         if(editID === -1) {
             let newItemInList = {
@@ -94,20 +137,60 @@ function resetInputField() {
     inputField.focus();
 };
 
-function createTable(array) {
+function displayList(arrayForList, sortCriteria, filterCriteria) {
     // reset table
     tableBody.innerHTML = ''
     // show table head
-    if (array.length !== 0) {
-        filter.classList.add('visibleOn');
+    if (arrayForList.length !== 0) {
+        filterElement.classList.add('visibleOn');
         mainTable.classList.add('visibleOn');
     } else {
-        filter.classList.remove('visibleOn');
+        filterElement.classList.remove('visibleOn');
         mainTable.classList.remove('visibleOn');
     }
     // iterate the array to build rows
-    for (let i = 0; i < array.length; i++) {
-        addRow(array[i]);
+
+    switch (sortCriteria) {
+        case 'asc':
+            arrayForList.sort((a, b) => (a.name > b.name) ? 1 : -1);
+            if (filterCriteria) {
+                let filteredArrayForList = arrayForList.filter(elem => elem.category === filterCriteria);
+                for (let i = 0; i < filteredArrayForList.length; i++) {
+                    addRow(filteredArrayForList[i]);
+                };
+            } else {
+                for (let i = 0; i < arrayForList.length; i++) {
+                    addRow(arrayForList[i]);
+                };
+            };
+            break;
+        case 'des':
+            arrayForList.sort((a, b) => (a.name < b.name) ? 1 : -1);
+            if (filterCriteria) {
+                let filteredArrayForList = arrayForList.filter(elem => elem.category === filterCriteria);
+                for (let i = 0; i < filteredArrayForList.length; i++) {
+                    addRow(filteredArrayForList[i]);
+                };
+            } else {
+                for (let i = 0; i < arrayForList.length; i++) {
+                    addRow(arrayForList[i]);
+                };
+            };
+            break;
+
+        default:
+            arrayForList.sort((a, b) => (a.id > b.id) ? 1 : -1);
+            if (filterCriteria) {
+                let filteredArrayForList = arrayForList.filter(elem => elem.category === filterCriteria);
+                for (let i = 0; i < filteredArrayForList.length; i++) {
+                    addRow(filteredArrayForList[i]);
+                };
+            } else {
+                for (let i = 0; i < arrayForList.length; i++) {
+                    addRow(arrayForList[i]);
+                };
+            };
+            break;
     }
 }
 
@@ -184,7 +267,7 @@ function removeEntry(entryId) {
     for (let i = 0; i < items.length; i++) {
         if (items[i].id === entryId) {
             items.splice(i, 1);
-            createTable(items);
+            displayList(items, activeSort, activeFilter);
             break;
         }
     }
@@ -200,7 +283,7 @@ function markEntry(entryId) {
             } else {
                 items[i].buyStatus = false;
             };
-            createTable(items);
+            displayList(items, activeSort, activeFilter);
             break;
         };
     };
@@ -210,27 +293,18 @@ function markEntry(entryId) {
 function setCategory(entryId) {
     for (let i = 0; i < items.length; i++) {
         if (items[i].id === entryId) {
+            // for value
             let selectedValue = document.querySelector(`#select-${entryId}`).value;
             items[i].category = selectedValue;
-
+            // for index
             let selIndex = document.querySelector(`#select-${entryId}`).selectedIndex;
             items[i].selIndexCategory = selIndex;
-            createTable(items);
+            displayList(items, activeSort, activeFilter);
             break;
         };
     };
 }
 
-function sortTableAsc(columnProperty) {
-    items.sort((item1ToSort, item2ToSort) => (item1ToSort[columnProperty] > item2ToSort[columnProperty]) ? 1 : -1);
-    renderTable();
-};
-
-function sortTableDes(columnProperty) {
-    items.sort((item1ToSort, item2ToSort) => (item1ToSort[columnProperty] > item2ToSort[columnProperty]) ? 1 : -1);
-    items.reverse();
-    renderTable();
-};
 
 // window.addEventListener('load', (event) => {
 //     console.log('page is fully loaded');
