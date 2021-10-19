@@ -12,7 +12,6 @@ const filterElement = document.getElementById('filterElement');
 const appliedFilter = document.getElementById('appliedFilter');
 const clearFilter = document.getElementById('clearFilter');
 const mainTable = document.getElementById('mainTable');
-const tableHead = document.getElementById('tableHead');
 const tableBody = document.getElementById('tableBody');
 const sortNameAsc = document.getElementById('sortNameAsc');
 const sortNameDes = document.getElementById('sortNameDes');
@@ -24,16 +23,19 @@ let activeSort = 'noSort'; // asc, des
 let activeFilter = ''; // drinks, bakery, meat, vegetables, fruits, sweets, spices, other
 let counter;
 
-// display the Shopping List
+
+// event listeners
+// display the beginning of Shopping List
 addBtn.addEventListener('click', () => {
     welcomeMessage.classList.add('displayOff');
     myShoppingList.classList.remove('displayOff');
     counter = true;
 });
 
-// event listeners
+// create the Shopping List
 addItemBtn.addEventListener('click', shoppingList);
 
+// sort
 sortNameAsc.addEventListener('click', () => {
     activeSort = 'asc';
     sortNameAsc.classList.add('borderActive');
@@ -57,6 +59,7 @@ clearSort.addEventListener('click', () => {
     displayList(items, activeSort, activeFilter);
 });
 
+// filter
 appliedFilter.addEventListener('change', () => {
     // get category from appliedFilter array
     activeFilter = appliedFilter.value;
