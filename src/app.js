@@ -1,7 +1,9 @@
 // variables
 const items = [];
-const existingCategories = [];
+let existingCategoriesTemp = [];
+let existingCategories = [];
 const welcomeMessage = document.getElementById('welcomeMessage');
+const myShoppingList = document.getElementById('myShoppingList');
 const addBtn = document.getElementById('addBtn');
 const addItemBtn = document.getElementById('addItemBtn');
 const inputField = document.getElementById('inputField');
@@ -15,23 +17,18 @@ const tableBody = document.getElementById('tableBody');
 const sortNameAsc = document.getElementById('sortNameAsc');
 const sortNameDes = document.getElementById('sortNameDes');
 const clearSort = document.getElementById('clearSort');
-// const sortCatAsc = document.getElementById('sortCatAsc');
-// const sortCatDes = document.getElementById('sortCatDes');
 let validity = false;
 let globalID = 1;
 let editID = -1;
 let activeSort = 'noSort'; // asc, des
 let activeFilter = ''; // drinks, bakery, meat, vegetables, fruits, sweets, spices, other
-let indexActiveFilter = '';
-
-// display the welcome message
-if (items.length !== 0) {
-    welcomeMessage.classList.add('displayOff');
-};
+let counter;
 
 // display the Shopping List
 addBtn.addEventListener('click', () => {
     welcomeMessage.classList.add('displayOff');
+    myShoppingList.classList.remove('displayOff');
+    counter = true;
 });
 
 // event listeners
@@ -57,15 +54,12 @@ clearSort.addEventListener('click', () => {
     activeSort = 'noFilter';
     sortNameDes.classList.remove('borderActive');
     sortNameAsc.classList.remove('borderActive');
-    // clearSort.classList.add('borderActive');
     displayList(items, activeSort, activeFilter);
 });
 
 appliedFilter.addEventListener('change', () => {
     // get category from appliedFilter array
     activeFilter = appliedFilter.value;
-    // get selected index from appliedFilter array
-    // indexActiveFilter = appliedFilter.selectedIndex;
 
     displayList(items, activeSort, activeFilter);
 });
@@ -73,22 +67,18 @@ appliedFilter.addEventListener('change', () => {
 clearFilter.addEventListener('click', () => {
     appliedFilter.selectedIndex = 0;
     activeFilter = "";
-    displayList(items, activeSort, activeFilter)
+    displayList(items, activeSort, activeFilter);
 
 })
-
-// set category from array
-    // document.querySelector(`#select-${elem.id}`).selectedIndex = elem.selIndexCategory;
-// get category from appliedFilter array
-
-// set category from appliedFilter array
-// document.querySelector('#appliedFilter').selectedIndex = index;
 
 // functions
 function shoppingList() {
     validateInput();
     buildList();
     resetInputField();
+    // reset active filter to be able to see the new item in list
+    appliedFilter.selectedIndex = 0;
+    activeFilter = "";
     displayList(items, activeSort, activeFilter);
 }
 
@@ -149,7 +139,6 @@ function displayList(arrayForList, sortCriteria, filterCriteria) {
         mainTable.classList.remove('visibleOn');
     }
     // iterate the array to build rows
-
     switch (sortCriteria) {
         case 'asc':
             arrayForList.sort((a, b) => (a.name > b.name) ? 1 : -1);
@@ -264,18 +253,27 @@ function renameEntry(entryId) {
 };
 
 function removeEntry(entryId) {
+    counter = false;
     for (let i = 0; i < items.length; i++) {
         if (items[i].id === entryId) {
             items.splice(i, 1);
-            displayList(items, activeSort, activeFilter);
-            break;
+            if (items.length !== 0) {
+                buildExistingCategories();
+                showExistingCategories();
+                displayList(items, activeSort, activeFilter);
+                console.log(items);
+                console.log('is stil here');
+                break;
+            } else {
+                showWelcomeMessage();
+            }
+            
         }
     }
 };
 
 function markEntry(entryId) {
     let markStatus = document.getElementById(`box-${entryId}`).checked;
-    console.log(markStatus);
     for (let i = 0; i < items.length; i++) {
         if (items[i].id === entryId) {
             if(markStatus === true) {
@@ -293,22 +291,64 @@ function markEntry(entryId) {
 function setCategory(entryId) {
     for (let i = 0; i < items.length; i++) {
         if (items[i].id === entryId) {
-            // for value
-            let selectedValue = document.querySelector(`#select-${entryId}`).value;
-            items[i].category = selectedValue;
             // for index
             let selIndex = document.querySelector(`#select-${entryId}`).selectedIndex;
             items[i].selIndexCategory = selIndex;
+            
+            // for value
+            let selectedValue = document.querySelector(`#select-${entryId}`).value;
+            items[i].category = selectedValue;
+            
+            buildExistingCategories();
+            showExistingCategories();
+
             displayList(items, activeSort, activeFilter);
             break;
         };
     };
 }
 
+function buildExistingCategories() {
+    existingCategoriesTemp = [];
+    items.forEach(member => {
+        if(member.category) {
+            existingCategoriesTemp.push(member.category);
+        }
+    });
+    let distinctExistingCategoriesTemp = [... new Set(existingCategoriesTemp)];
+    existingCategories = []
+    distinctExistingCategoriesTemp.forEach(member => existingCategories.push(member));
+}
 
-// window.addEventListener('load', (event) => {
-//     console.log('page is fully loaded');
-//     if (items.length !== 0) {
-//         welcomeMessage.classList.add('visibleOff');
-//     }
-// });
+function showExistingCategories() {
+    const defaultCategories = ['drinks', 'bakery', 'meat', 'vegetables', 'fruits', 'sweets', 'spices', 'other'];
+    defaultCategories.forEach( member => {
+        let resetOptionToDisplay = document.getElementById(`${member}`);
+        resetOptionToDisplay.classList.remove('displayOn');
+    })
+
+    for (let i = 0; i < defaultCategories.length; i++) {
+        for (let j = 0; j < existingCategories.length; j++) {
+            if (defaultCategories[i] === existingCategories[j]) {
+                let optionToDisplay = document.getElementById(`${existingCategories[j]}`);
+                optionToDisplay.classList.add('displayOn');
+            }
+        }
+    }
+}
+
+function showWelcomeMessage() {
+    // display the welcome message
+    if ((counter == false) && items.length === 0) {
+        console.log('to be hidden');
+        console.log(items);
+        // reset table
+        tableBody.innerHTML = '';
+        // hide table head
+        filterElement.classList.remove('visibleOn');
+        mainTable.classList.remove('visibleOn');
+
+        welcomeMessage.classList.remove('displayOff');
+        myShoppingList.classList.add('displayOff');
+    };
+}

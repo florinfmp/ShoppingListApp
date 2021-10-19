@@ -24,6 +24,14 @@ body {
     display: none;
 }
 
+.test {
+    color: 'red';
+}
+
+.displayOn {
+    display: block;
+}
+
 .visibleOff {
     visibility: hidden;
 }
@@ -85,4 +93,30 @@ th {
 .borderActive {
     border: solid 1px blue;
 }
+
+#myShoppingList {
+    background-color: whitesmoke;
+}
+
+#headCheckbox {
+    width: 5%;
+}
+
+#headCategory {
+    width: 23%;
+}
+
+#headRename {
+    width: 13%;
+}
+
+#headDelete {
+    width: 6%;
+}
+
+#tableHead {
+    border-bottom: 1px solid black;
+}
+
+
 
