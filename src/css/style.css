@@ -12,7 +12,7 @@ html {
 
 /* Responsive Full Background Image Using CSS */
 body {
-    background-image: url(/ShoppingListApp/data/background.jpeg);
+    background-image: url(https://raw.githubusercontent.com/florinpfm/ShoppingListApp/main/data/background.jpeg);
     background-position: center center;
     background-repeat: no-repeat;
     background-attachment: fixed;
